@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include "simulador.h"
+#include <stdio.h> ///ASDSADsad
+#include "simulador.h" 
 #include "validaciones.h"
 
 int main(void) {
