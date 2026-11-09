@@ -1,10 +1,10 @@
-#include <stdio.h> ///ASDSADsad
+#include <stdio.h> 
 #include "simulador.h" 
 #include "validaciones.h"
 
 int main(void) {
-    ParametrosOrbitales parametros;
-    EstadoMision estado;
+    //ParametrosOrbitales parametros;
+   // EstadoMision estado;
     int opcion;
 
     //inicializarParametros(&parametros);               simulador.c
