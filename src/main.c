@@ -4,11 +4,11 @@
 
 int main(void) {
     //ParametrosOrbitales parametros;
-   // EstadoMision estado;
+    //EstadoMision estado;
     int opcion;
 
-    //inicializarParametros(&parametros);               simulador.c
-    //inicializarEstado(&estado);                       simulador.c
+    //inicializarParametros(&parametros);             
+    //inicializarEstado(&estado);                     
 
     do {
         // mostrarMenu();            se hace en simulador.c
