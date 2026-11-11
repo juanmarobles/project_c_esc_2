@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "simulador.h"
 #include "validaciones.h"
+#include "estructuras.h"
 
 int main(void) {
     ParametrosOrbitales parametros;

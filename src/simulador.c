@@ -132,3 +132,21 @@ int simularPropulsorLateral(
 
     return 1;
 }
+
+void mostrarMenu(void) {
+    printf("\n");
+    printf("====================================================\n");
+    printf("          NASA - SIMULADOR DE MISION ARTEMIS\n");
+    printf("             ORION - ORBITA TERRESTRE LEO\n");
+    printf("====================================================\n");
+    printf(" 1. Configurar parametros de la mision\n");
+    printf(" 2. Calcular velocidad orbital y fuerzas\n");
+    printf(" 3. Calcular periodo orbital\n");
+    printf(" 4. Calcular aceleracion centripeta\n");
+    printf(" 5. Simular pulso del propulsor lateral\n");
+    printf(" 6. Ejecutar simulacion completa\n");
+    printf(" 7. Consultar reporte e historial\n");
+    printf(" 8. Restaurar valores originales del escenario\n");
+    printf(" 0. Salir\n");
+    printf("----------------------------------------------------\n");
+}
