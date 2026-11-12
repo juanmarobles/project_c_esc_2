@@ -94,43 +94,61 @@ int calcularDesviacionLateral(
  * Ejecuta la simulacion del propulsor lateral
  * y guarda los resultados en el estado de la mision.
  */
-int simularPropulsorLateral(
+
+void simularPropulsorLateral(
     const ParametrosOrbitales *p,
     EstadoMision *e
 ) {
     ResultadoSimulacion resultado;
 
     if (p == NULL || e == NULL)
-        return 0;
+        return;
 
     if (!isfinite(p->aceleracionLateral) ||
         !isfinite(p->duracionPulso))
-        return 0;
+        return;
 
     if (p->aceleracionLateral < 0.0 ||
         p->duracionPulso < 0.0)
-        return 0;
+        return;
 
     if (!calcularVelocidadLateral(
             p->aceleracionLateral,
             p->duracionPulso,
             &resultado.velocidadLateral))
-        return 0;
+        return;
 
     if (!calcularDesviacionLateral(
             p->aceleracionLateral,
             p->duracionPulso,
             &resultado.desviacionLateral))
-        return 0;
+        return;
 
     resultado.duracionSimulacion = p->duracionPulso;
     resultado.calculosRealizados = 1;
 
+    printf("\n--- SIMULACION DEL PROPULSOR LATERAL ---\n");
+    printf("Aceleracion perpendicular: %.3f m/s^2\n",
+           p->aceleracionLateral);
+    printf("Duracion del pulso: %.3f s\n", p->duracionPulso);
+    printf("Velocidad lateral adquirida: %.3f m/s\n",
+           resultado.velocidadLateral);
+    printf("Desviacion lateral: %.3f m\n",
+           resultado.desviacionLateral);
+
+    printf("\nCon aceleracion constante perpendicular a la velocidad inicial:\n");
+    printf("v_lateral = a * dt\n");
+    printf("desviacion = 1/2 * a * dt^2\n");
+    printf("La nave deja de seguir la orbita circular nominal.\n");
+    printf("En el modelo ideal, el impulso cambia el vector velocidad\n");
+    printf("y la trayectoria pasa a ser una orbita perturbada,\n");
+    printf("aproximadamente eliptica.\n");
+    printf("La desviacion calculada es local e instantanea durante el pulso;\n");
+    printf("no modela la evolucion orbital posterior ni perturbaciones reales.\n");
+
     e->ultimoResultado = resultado;
     e->cantidadResultados++;
     e->tieneCalculos = 1;
-
-    return 1;
 }
 
 void mostrarMenu(void) {
