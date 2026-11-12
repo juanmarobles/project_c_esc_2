@@ -150,3 +150,55 @@ void mostrarMenu(void) {
     printf(" 0. Salir\n");
     printf("----------------------------------------------------\n");
 }
+
+/*
+ * Muestra en pantalla el reporte detallado del estado actual de la mision.
+ */
+void mostrarReporte(const ParametrosOrbitales *p, const EstadoMision *e) {
+    if (p == NULL || e == NULL) return;
+
+    double radioOrbital = p->radioTierra + p->altitud;
+    double velocidadOrbital = 0.0;
+    double aceleracionCentripeta = 0.0;
+    double fuerzaGravitatoria = 0.0;
+    double periodoSegundos = 0.0;
+    double periodoMinutos = 0.0;
+
+    if (radioOrbital > 0.0) {
+        velocidadOrbital = sqrt((p->constanteG * p->masaTierra) / radioOrbital);
+        aceleracionCentripeta = (velocidadOrbital * velocidadOrbital) / radioOrbital;
+        fuerzaGravitatoria = p->masaOrion * aceleracionCentripeta;
+        if (velocidadOrbital > 0.0) {
+            periodoSegundos = (2.0 * 3.14159265 * radioOrbital) / velocidadOrbital;
+            periodoMinutos = periodoSegundos / 60.0;
+        }
+    }
+
+    printf("\n====================================================\n");
+    printf("         REPORTE FINAL DE MISION - ORION LEO        \n");
+    printf("====================================================\n");
+    printf(" [1] PARAMETROS CONFIGURADOS:\n");
+    printf("  - Masa de la Tierra (MT)   : %.3e kg\n", p->masaTierra);
+    printf("  - Radio Terrestre (RT)     : %.2f m (%.2f km)\n", p->radioTierra, p->radioTierra / 1000.0);
+    printf("  - Altitud Orbital (h)      : %.2f m (%.2f km)\n", p->altitud, p->altitud / 1000.0);
+    printf("  - Radio Orbital Total (r)  : %.2f m (%.2f km)\n", radioOrbital, radioOrbital / 1000.0);
+    printf("  - Masa de la Nave Orion    : %.2f kg\n", p->masaOrion);
+    printf("----------------------------------------------------\n");
+    printf(" [2] ANALISIS ORBITAL (MCU Y GRAVITACION):\n");
+    printf("  - Velocidad Orbital (v)    : %.2f m/s (%.2f km/h)\n", velocidadOrbital, velocidadOrbital * 3.6);
+    printf("  - Periodo Orbital (T)      : %.2f s (%.2f min)\n", periodoSegundos, periodoMinutos);
+    printf("  - Aceleracion Centripeta   : %.4f m/s^2\n", aceleracionCentripeta);
+    printf("  - Fuerza Gravitatoria (Fg) : %.2f N (Equivalente a Fc)\n", fuerzaGravitatoria);
+    printf("----------------------------------------------------\n");
+    printf(" [3] ESTADO DEL PROPULSOR LATERAL:\n");
+    if (e->tieneCalculos && e->ultimoResultado.calculosRealizados) {
+        printf("  - Aceleracion aplicada (a) : %.2f m/s^2\n", p->aceleracionLateral);
+        printf("  - Duracion del pulso (dt)  : %.2f s\n", e->ultimoResultado.duracionSimulacion);
+        printf("  - Velocidad lateral (vL)   : %.2f m/s\n", e->ultimoResultado.velocidadLateral);
+        printf("  - Desviacion lateral       : %.2f m\n", e->ultimoResultado.desviacionLateral);
+        printf("  - Diagnostico de orbita    : Trayectoria perturbada por impulso lateral.\n");
+    } else {
+        printf("  - No se registran maniobras de propulsor lateral aun.\n");
+    }
+    printf("====================================================\n");
+}
