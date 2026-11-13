@@ -1,37 +1,35 @@
-
 #ifndef ESTRUCTURAS_H
 #define ESTRUCTURAS_H
 
-/*
- * Parametros fisicos de la mision Orion.
- */
+#define HISTORIAL_MAX 100
+
 typedef struct {
-    double masaTierra;
-    double radioTierra;
-    double altitud;
-    double constanteG;
-    double masaOrion;
-    double aceleracionLateral;
-    double duracionPulso;
+    double masaTierra;          /* kg */
+    double radioTierra;         /* m */
+    double altitud;             /* m */
+    double constanteG;          /* N m^2 / kg^2 */
+    double masaOrion;           /* kg */
+    double aceleracionLateral;  /* m/s^2 */
+    double duracionPulso;       /* s */
 } ParametrosOrbitales;
 
-/*
- * Resultados de los calculos del propulsor lateral.
- */
 typedef struct {
-    double velocidadLateral;
-    double desviacionLateral;
-    double duracionSimulacion;
+    double radioOrbital;        /* m */
+    double velocidadOrbital;    /* m/s */
+    double periodoSegundos;     /* s */
+    double aceleracionCentripeta; /* m/s^2 */
+    double fuerzaGravitatoria;  /* N */
+    double fuerzaCentripeta;    /* N */
+    double desviacionLateral;   /* m */
+    double velocidadLateralFinal; /* m/s */
     int calculosRealizados;
-} ResultadoSimulacion;
+} ResultadoMision;
 
-/*
- * Estado general de la mision.
- */
 typedef struct {
+    ResultadoMision historial[HISTORIAL_MAX];
     int cantidadResultados;
     int tieneCalculos;
-    ResultadoSimulacion ultimoResultado;
+    ResultadoMision ultimoResultado;
 } EstadoMision;
 
 #endif
