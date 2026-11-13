@@ -119,6 +119,33 @@ void mostrarMenu(void) {
 }
 
 /*
+ * Muestra el historial acumulado de simulaciones ejecutadas en la sesion.
+ */
+void mostrarHistorialSimulaciones(const ParametrosOrbitales *p, const EstadoMision *e) {
+    if (p == NULL || e == NULL) return;
+
+    printf("----------------------------------------------------\n");
+    printf(" [4] HISTORIAL DE SIMULACIONES DE LA SESION:\n");
+    printf("  - Total de simulaciones ejecutadas: %d\n", e->cantidadResultados);
+
+    if (!e->tieneCalculos || e->cantidadResultados <= 0) {
+        printf("  - Aun no hay registros previos para mostrar.\n");
+        return;
+    }
+
+    printf("\n  #  | Altitud (km) | Pulso (s) | Vel. Lat (m/s) | Desviacion (m)\n");
+    printf("  ---+--------------+-----------+----------------+---------------\n");
+    for (int i = 0; i < e->cantidadResultados; i++) {
+        printf("  %2d | %12.2f | %9.2f | %14.2f | %14.2f\n",
+               i + 1,
+               p->altitud / 1000.0,
+               e->ultimoResultado.duracionSimulacion,
+               e->ultimoResultado.velocidadLateral,
+               e->ultimoResultado.desviacionLateral);
+    }
+}
+
+/*
  * Muestra en pantalla el reporte detallado del estado actual de la mision.
  */
 void mostrarReporte(const ParametrosOrbitales *p, const EstadoMision *e) {
@@ -167,5 +194,6 @@ void mostrarReporte(const ParametrosOrbitales *p, const EstadoMision *e) {
     } else {
         printf("  - No se registran maniobras de propulsor lateral aun.\n");
     }
+    mostrarHistorialSimulaciones(p, e);
     printf("====================================================\n");
 }
