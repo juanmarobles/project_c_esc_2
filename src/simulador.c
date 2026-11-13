@@ -69,25 +69,9 @@ int calcularVelocidadLateral(
  *
  * Retorna 1 si el calculo fue exitoso y 0 si hubo un error.
  */
-int calcularDesviacionLateral(
-    double aceleracion,
-    double tiempo,
-    double *desviacion
-) {
-    if (desviacion == NULL) return 0;
-
-    if (!isfinite(aceleracion) || !isfinite(tiempo))
-        return 0;
-
-    if (aceleracion < 0.0 || tiempo < 0.0)
-        return 0;
-
-    *desviacion = 0.5 * aceleracion * tiempo * tiempo;
-
-    if (!isfinite(*desviacion))
-        return 0;
-
-    return 1;
+double calcularDesviacionLateral(const ParametrosOrbitales *p) {
+    return 0.5 * p->aceleracionLateral *
+           p->duracionPulso * p->duracionPulso;
 }
 
 /*
@@ -95,60 +79,25 @@ int calcularDesviacionLateral(
  * y guarda los resultados en el estado de la mision.
  */
 
-void simularPropulsorLateral(
-    const ParametrosOrbitales *p,
-    EstadoMision *e
-) {
-    ResultadoSimulacion resultado;
-
-    if (p == NULL || e == NULL)
-        return;
-
-    if (!isfinite(p->aceleracionLateral) ||
-        !isfinite(p->duracionPulso))
-        return;
-
-    if (p->aceleracionLateral < 0.0 ||
-        p->duracionPulso < 0.0)
-        return;
-
-    if (!calcularVelocidadLateral(
-            p->aceleracionLateral,
-            p->duracionPulso,
-            &resultado.velocidadLateral))
-        return;
-
-    if (!calcularDesviacionLateral(
-            p->aceleracionLateral,
-            p->duracionPulso,
-            &resultado.desviacionLateral))
-        return;
-
-    resultado.duracionSimulacion = p->duracionPulso;
-    resultado.calculosRealizados = 1;
+void simularPropulsorLateral(const ParametrosOrbitales *p, EstadoMision *e) {
+    ResultadoMision r = calcularResultadosBase(p);
+    r.desviacionLateral = calcularDesviacionLateral(p);
+    r.velocidadLateralFinal = p->aceleracionLateral * p->duracionPulso;
 
     printf("\n--- SIMULACION DEL PROPULSOR LATERAL ---\n");
-    printf("Aceleracion perpendicular: %.3f m/s^2\n",
-           p->aceleracionLateral);
-    printf("Duracion del pulso: %.3f s\n", p->duracionPulso);
-    printf("Velocidad lateral adquirida: %.3f m/s\n",
-           resultado.velocidadLateral);
-    printf("Desviacion lateral: %.3f m\n",
-           resultado.desviacionLateral);
-
+    printf("Aceleracion perpendicular: %.3f m/s^2\n", p->aceleracionLateral);
+    printf("Duracion del pulso:         %.3f s\n", p->duracionPulso);
+    printf("Velocidad lateral adquirida: %.3f m/s\n", r.velocidadLateralFinal);
+    printf("Desviacion lateral:          %.3f m\n", r.desviacionLateral);
     printf("\nCon aceleracion constante perpendicular a la velocidad inicial:\n");
     printf("v_lateral = a * dt\n");
     printf("desviacion = 1/2 * a * dt^2\n");
-    printf("La nave deja de seguir la orbita circular nominal.\n");
-    printf("En el modelo ideal, el impulso cambia el vector velocidad\n");
-    printf("y la trayectoria pasa a ser una orbita perturbada,\n");
-    printf("aproximadamente eliptica.\n");
+    printf("La nave deja de seguir la orbita circular nominal. En el modelo\n");
+    printf("ideal, el impulso cambia el vector velocidad y la trayectoria\n");
+    printf("pasa a ser una orbita perturbada, aproximadamente eliptica.\n");
     printf("La desviacion calculada es local e instantanea durante el pulso;\n");
     printf("no modela la evolucion orbital posterior ni perturbaciones reales.\n");
-
-    e->ultimoResultado = resultado;
-    e->cantidadResultados++;
-    e->tieneCalculos = 1;
+    guardarResultado(e, &r);
 }
 
 void mostrarMenu(void) {
